@@ -40,8 +40,9 @@ ORDER BY avg_medals DESC
 
 -- Najwy¿sza frekwencja
 WITH freq AS (
-SELECT game, COUNT(DISTINCT region_id) AS frequency
-FROM olympics
+SELECT game, COUNT(DISTINCT region) AS frequency
+FROM olympics o
+JOIN regions r ON r.region_id = o.region_id 
 GROUP BY game)
 SELECT game, frequency
 FROM freq
