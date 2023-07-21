@@ -39,15 +39,10 @@ ORDER BY team;
 -- Regions table
 DROP TABLE IF EXISTS regions;
 
-CREATE TABLE regions (
-	region_id INT IDENTITY(1,1) PRIMARY KEY
-	,region NVARCHAR(255)
-	,note NVARCHAR(255)
-);
-
-INSERT INTO regions(region, note)
-SELECT DISTINCT	region, note
+SELECT region_code AS region_id, region
+INTO regions
 FROM regionCodes
+WHERE region IS NOT NULL
 ORDER BY region;
 
 -- Disciplines table
@@ -99,7 +94,7 @@ CREATE TABLE olympics (
 	,city NVARCHAR(255)
 	,athlete_id INT
 	,team_id INT
-	,region_id INT
+	,region_id NVARCHAR(55)
 	,discipline_id INT
 	,category_id INT
 	,medal_id INT
@@ -118,10 +113,9 @@ SELECT
 	,c.category_id
 	,m.medal_id
 FROM dataCombined dc
-LEFT JOIN regionCodes rc ON dc.country_code = rc.region_code
 LEFT JOIN athletes a ON dc.athlete_id = a.athlete_id
 LEFT JOIN teams t ON dc.team = t.team
-LEFT JOIN regions r ON rc.region = r.region
+LEFT JOIN regions r ON dc.country_code = r.region_id
 LEFT JOIN disciplines d ON dc.discipline = d.discipline_name
 LEFT JOIN categories c ON dc.category = c.category
 LEFT JOIN medals m ON dc.medal = m.name
